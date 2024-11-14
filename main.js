@@ -1,6 +1,7 @@
 import './style.css';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 
 // Scene, Camera, and Renderer
 const scene = new THREE.Scene();
@@ -32,7 +33,7 @@ const floorGeometry = new THREE.PlaneGeometry(9.8, 9.8);
 const floorMaterial = new THREE.MeshStandardMaterial({ color: 0xdeb887 });
 const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 floor.rotation.x = -Math.PI / 2;
-floor.position.y = 0.01; // Slightly above the ground to avoid z-fighting
+floor.position.y = 0.01;
 floor.receiveShadow = true;
 scene.add(floor);
 
@@ -40,7 +41,7 @@ scene.add(floor);
 const doorGeometry = new THREE.BoxGeometry(2, 3, 0.1);
 const doorMaterial = new THREE.MeshStandardMaterial({ color: 0x333333 });
 const door = new THREE.Mesh(doorGeometry, doorMaterial);
-door.position.set(0, 0.6, 5.05); // Place door at the front of the house
+door.position.set(0, 0.6, 5.05);
 scene.add(door);
 
 // Roof (larger pyramid)
@@ -52,39 +53,39 @@ roof.rotation.y = Math.PI / 4;
 roof.castShadow = true;
 scene.add(roof);
 
-// Grass field (plane geometry)
+// Grass field
 const grassGeometry = new THREE.PlaneGeometry(50, 50);
 const grassMaterial = new THREE.MeshStandardMaterial({ color: 0x228B22 });
 const grass = new THREE.Mesh(grassGeometry, grassMaterial);
-grass.rotation.x = -Math.PI / 2; // Rotate to lay flat
-grass.position.y = -1; // Position it at ground level
+grass.rotation.x = -Math.PI / 2;
+grass.position.y = -1;
 grass.receiveShadow = true;
 scene.add(grass);
 
-// Driveway (rectangle in front of the house)
+// Driveway
 const drivewayGeometry = new THREE.PlaneGeometry(3, 10);
 const drivewayMaterial = new THREE.MeshStandardMaterial({ color: 0x555555 });
 const driveway = new THREE.Mesh(drivewayGeometry, drivewayMaterial);
-driveway.rotation.x = -Math.PI / 2; // Rotate to lay flat
-driveway.position.set(0, -0.9, 7); // Place it in front of the house
+driveway.rotation.x = -Math.PI / 2;
+driveway.position.set(0, -0.9, 7);
 driveway.receiveShadow = true;
 scene.add(driveway);
 
 // Load painting texture and create paintings on left and right walls
-const loader = new THREE.TextureLoader();
-loader.load('61fbf30419785c12ae7a1d2cc8e65c75.jpg', (texture) => { // Replace with the path to your painting image
+const textureLoader = new THREE.TextureLoader();
+textureLoader.load('61fbf30419785c12ae7a1d2cc8e65c75.jpg', (texture) => {
   const paintingGeometry = new THREE.PlaneGeometry(2, 3);
   const paintingMaterial = new THREE.MeshStandardMaterial({ map: texture });
 
-  // Painting on the left wall
+  // Left wall painting
   const paintingLeft = new THREE.Mesh(paintingGeometry, paintingMaterial);
-  paintingLeft.position.set(-4.9, 1.5, 0); // Higher placement
+  paintingLeft.position.set(-4.9, 1.5, 0);
   paintingLeft.rotation.y = Math.PI / 2;
   scene.add(paintingLeft);
 
-  // Painting on the right wall
+  // Right wall painting
   const paintingRight = new THREE.Mesh(paintingGeometry, paintingMaterial);
-  paintingRight.position.set(4.9, 1.5, 0); // Higher placement
+  paintingRight.position.set(4.9, 1.5, 0);
   paintingRight.rotation.y = -Math.PI / 2;
   scene.add(paintingRight);
 });
@@ -106,7 +107,7 @@ function createTree(x, z) {
   scene.add(foliage);
 }
 
-// Add trees around the house
+// Add trees
 createTree(10, 10);
 createTree(-10, 10);
 createTree(10, -10);
@@ -114,6 +115,16 @@ createTree(-10, -10);
 createTree(15, 0);
 createTree(-15, 0);
 createTree(0, -15);
+
+// Load and add 3D model using FBXLoader
+const fbxLoader = new FBXLoader();
+fbxLoader.load('/Jeep_done.fbx', (object) => {
+  object.position.set(5, -0.6, 10); 
+  object.scale.set(0.008, 0.008, 0.008); 
+  object.castShadow = true;
+  object.rotation.y = Math.PI / 5;
+  scene.add(object);
+});
 
 // Camera position and animation
 camera.position.set(0, 5, 20);
@@ -160,7 +171,6 @@ function animateCamera() {
     }
   }
 }
-
 
 // Animation loop
 function animate() {
